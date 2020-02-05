@@ -7,6 +7,26 @@ All notable end-user facing changes are documented in this file.
 *Here are all the changes in `master` branch, and will be moved to the appropriate release once they are included in a published nuget package.
 The idea is to track end-user facing changes as they occur.*
 
+### [2.4.5] (changes since 2.4.4)
+
+- Non-breaking improvements
+  - Make IFatalErrorHandler public so that it can be replaced by users (#6170)
+  - Allow MayInterleaveAttribute on base grains. Fix for issue #6189 (#6192)
+
+- Non-breaking bug fixes
+  - Azure table grain storage inconsistent state on not found (#6071)
+  - Removed silo status check before cleaning up system targets from… (#6072)
+  - CodeGen: fix ambiguous reference to Orleans namespace (#6171)
+
+### [3.0.2] (changes since 3.0.1)
+
+- Non-breaking improvements
+  - Specify endpoint AddressFamily in Socket constructor (#6168)
+  - Make IFatalErrorHandler public so that it can be replaced by users (#6170)
+ 
+- Non-breaking bug fixes
+  - CodeGen: fix ambiguous reference to Orleans namespace (#6171)
+
 ### [3.0.1] (changes since 3.0.0)
 
 - Non-breaking improvements
@@ -1321,7 +1341,7 @@ Two fixes backported from v2.x
   - Make PreferLocalPlacement activate in other silos when shutting down #2276
   - Reset GrainClient.ClientInvokeCallback when uninitializing GrainClient #2299
   - Fix ObjectDisposedException in networking layer #2302
-  - Reset client gateway reciever buffer on socket reset. #2316
+  - Reset client gateway receiver buffer on socket reset. #2316
   - Removed calling Trace.Close() from TelemetryConsumer.Close() #2396
   - Removes deadlocking and corrupted hashing in SQL storage provider #2395
   - Fix #2358: Invoke interceptor broken for generic grains #2502
@@ -1357,7 +1377,7 @@ Two fixes backported from v2.x
   - Release BinaryTokenStreamWriter buffers after use in more cases. #2326
   - Provide better handling in Grain when the GrainRuntime or GrainIdentity is null #2338
 - Bug fixes
-  - Reset client gateway reciever buffer on socket reset. #2316
+  - Reset client gateway receiver buffer on socket reset. #2316
   - Removes potential deadlocking and corrupted hashing in ADO.NET storage provider #2395
   - LoadShedQueueFlowControl cast fix #2405
 

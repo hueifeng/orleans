@@ -1,3 +1,4 @@
+#if !NETCOREAPP
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,9 +40,9 @@ namespace Tester.HeterogeneousSilosTests
             cluster.Deploy();
         }
 
-        public class SiloConfigurator : ISiloBuilderConfigurator
+        public class SiloConfigurator : ISiloConfigurator
         {
-            public void Configure(ISiloHostBuilder hostBuilder)
+            public void Configure(ISiloBuilder hostBuilder)
             {
                 hostBuilder.Configure<SiloMessagingOptions>(options => options.AssumeHomogenousSilosForTesting = false);
                 hostBuilder.Configure<TypeManagementOptions>(options => options.TypeMapRefreshInterval = RefreshInterval);
@@ -205,3 +206,4 @@ namespace Tester.HeterogeneousSilosTests
         }
     }
 }
+#endif

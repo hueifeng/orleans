@@ -134,7 +134,7 @@ namespace Orleans.CodeGenerator.Generators
                     {
                         body.Add(
                             ExpressionStatement(
-                                InvocationExpression(wellKnownTypes.GrainFactoryBase.ToDisplayString().ToIdentifierName().Member("CheckGrainObserverParamInternal"))
+                                InvocationExpression(wellKnownTypes.GrainFactoryBase.ToNameSyntax().Member("CheckGrainObserverParamInternal"))
                                     .AddArgumentListArguments(Argument(parameter.Name.ToIdentifierName()))));
                     }
                 }
@@ -195,7 +195,7 @@ namespace Orleans.CodeGenerator.Generators
 
                     if (isOneWayTask)
                     {
-                        if (!wellKnownTypes.Task.Equals(method.ReturnType))
+                        if (!SymbolEqualityComparer.Default.Equals(wellKnownTypes.Task, method.ReturnType))
                         {
                             throw new CodeGenerationException(
                                 $"Method {method} is marked with [{wellKnownTypes.OneWayAttribute.Name}], " +
@@ -209,8 +209,8 @@ namespace Orleans.CodeGenerator.Generators
                 else if (method.ReturnType is INamedTypeSymbol methodReturnType)
                 {
                     // If the method doesn't return a Task type (eg, it returns ValueTask<T>), then we must make an async method and await the invocation result.
-                    var isTaskMethod = wellKnownTypes.Task.Equals(methodReturnType)
-                                       || methodReturnType.IsGenericType && wellKnownTypes.Task_1.Equals(methodReturnType.ConstructedFrom);
+                    var isTaskMethod = SymbolEqualityComparer.Default.Equals(wellKnownTypes.Task, methodReturnType)
+                                       || methodReturnType.IsGenericType && SymbolEqualityComparer.Default.Equals(wellKnownTypes.Task_1, methodReturnType.ConstructedFrom);
                     asyncMethod = !isTaskMethod;
 
                     var returnType = methodReturnType.IsGenericType
@@ -230,7 +230,17 @@ namespace Orleans.CodeGenerator.Generators
                     }
 
                     var methodResult = asyncMethod ? AwaitExpression(invocation) : (ExpressionSyntax)invocation;
-                    body.Add(ReturnStatement(methodResult));
+
+                    var isUntypedValueTaskMethod =
+                        SymbolEqualityComparer.Default.Equals(wellKnownTypes.ValueTask, methodReturnType);
+                    if (isUntypedValueTaskMethod)
+                    {
+                        body.Add(ExpressionStatement(methodResult));
+                    }
+                    else
+                    {
+                        body.Add(ReturnStatement(methodResult));
+                    }
                 }
                 else throw new NotSupportedException($"Method {method} has unsupported return type, {method.ReturnType}.");
 
@@ -403,7 +413,7 @@ namespace Orleans.CodeGenerator.Generators
 
             var interfaceIdArgument = parameters[0].Name.ToIdentifierName();
             var methodIdArgument = parameters[1].Name.ToIdentifierName();
-            
+
             var callThrowMethodNotImplemented = InvocationExpression(IdentifierName("ThrowMethodNotImplemented"))
                 .WithArgumentList(ArgumentList(SeparatedList(new[]
                 {

@@ -1,3 +1,4 @@
+#if !NETCOREAPP
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -149,9 +150,9 @@ namespace Tests.GeoClusterTests
             }
         }
 
-        public class TwoClusterSiloConfigurator : ISiloBuilderConfigurator
+        public class TwoClusterSiloConfigurator : ISiloConfigurator
         {
-            public void Configure(ISiloHostBuilder hostBuilder)
+            public void Configure(ISiloBuilder hostBuilder)
             {
                 hostBuilder.Configure<MultiClusterOptions>(options =>
                 {
@@ -247,3 +248,4 @@ namespace Tests.GeoClusterTests
         }
     }
 }
+#endif

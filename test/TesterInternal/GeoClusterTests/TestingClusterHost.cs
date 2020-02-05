@@ -1,3 +1,4 @@
+#if !NETCOREAPP
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -133,7 +134,7 @@ namespace Tests.GeoClusterTests
             string clusterId,
             short numSilos,
             Action<TestClusterBuilder> configureTestCluster = null)
-            where TSiloBuilderConfigurator : ISiloBuilderConfigurator, new()
+            where TSiloBuilderConfigurator : ISiloConfigurator, new()
         {
             NewCluster(
                 globalServiceId.ToString(),
@@ -147,9 +148,9 @@ namespace Tests.GeoClusterTests
                 });
         }
 
-        private class StandardGeoClusterConfigurator : ISiloBuilderConfigurator
+        private class StandardGeoClusterConfigurator : ISiloConfigurator
         {
-            public void Configure(ISiloHostBuilder hostBuilder)
+            public void Configure(ISiloBuilder hostBuilder)
             {
                 hostBuilder.Configure<MultiClusterOptions>(
                     options =>
@@ -165,16 +166,16 @@ namespace Tests.GeoClusterTests
             }
         }
 
-        private class NoOpSiloBuilderConfigurator : ISiloBuilderConfigurator
+        private class NoOpSiloBuilderConfigurator : ISiloConfigurator
         {
-            public void Configure(ISiloHostBuilder hostBuilder)
+            public void Configure(ISiloBuilder hostBuilder)
             {
             }
         }
 
-        private class TestSiloBuilderConfigurator : ISiloBuilderConfigurator
+        private class TestSiloBuilderConfigurator : ISiloConfigurator
         {
-            public void Configure(ISiloHostBuilder hostBuilder)
+            public void Configure(ISiloBuilder hostBuilder)
             {
                 hostBuilder.ConfigureLogging(builder =>
                 {
@@ -202,7 +203,7 @@ namespace Tests.GeoClusterTests
         }
 
         public void NewCluster<TSiloBuilderConfigurator>(Guid serviceId, string clusterId, short numSilos)
-            where TSiloBuilderConfigurator : ISiloBuilderConfigurator, new()
+            where TSiloBuilderConfigurator : ISiloConfigurator, new()
         {
             NewCluster(
                 serviceId.ToString(),
@@ -247,9 +248,9 @@ namespace Tests.GeoClusterTests
             }
         }
 
-        public class SiloHostConfigurator : ISiloBuilderConfigurator
+        public class SiloHostConfigurator : ISiloConfigurator
         {
-            public void Configure(ISiloHostBuilder hostBuilder)
+            public void Configure(ISiloBuilder hostBuilder)
             {
                 hostBuilder.AddMemoryGrainStorage("MemoryStore")
                     .AddMemoryGrainStorageAsDefault();
@@ -426,3 +427,4 @@ namespace Tests.GeoClusterTests
         }
     }
 }
+#endif

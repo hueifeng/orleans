@@ -1,3 +1,4 @@
+#if !NETCOREAPP
 //#define USE_GENERICS
 //#define DELETE_AFTER_TEST
 
@@ -75,9 +76,9 @@ namespace UnitTests.Streaming.Reliability
             }
         }
 
-        public class SiloBuilderConfigurator : ISiloBuilderConfigurator
+        public class SiloBuilderConfigurator : ISiloConfigurator
         {
-            public void Configure(ISiloHostBuilder hostBuilder)
+            public void Configure(ISiloBuilder hostBuilder)
             {
                 hostBuilder.UseAzureStorageClustering(options =>
                 {
@@ -1137,3 +1138,4 @@ namespace UnitTests.Streaming.Reliability
 }
 
 // ReSharper restore ConvertToConstant.Local
+#endif

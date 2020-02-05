@@ -39,20 +39,17 @@ set TESTS=^
 %CMDHOME%\test\Transactions\Orleans.Transactions.Tests,^
 %CMDHOME%\test\Transactions\Orleans.Transactions.Azure.Test,^
 %CMDHOME%\test\TestInfrastructure\Orleans.TestingHost.Tests,^
-%CMDHOME%\test\DependencyInjection.Tests
+%CMDHOME%\test\DependencyInjection.Tests,^
+%CMDHOME%\test\Orleans.Connections.Security.Tests,^
+%CMDHOME%\test\NetCore.Tests,^
+%CMDHOME%\test\Analyzers.Tests
 
-:: Add to TESTS once dotnet-xunit supports .NET Core 3.0 (post dotnet-xunit v2.4.1)
-rem %CMDHOME%\test\Orleans.Connections.Security.Tests
-rem %CMDHOME%\test\NetCore.Tests
-
-rem %CMDHOME%\test\Analyzers.Tests
-
-if []==[%TEST_FILTERS%] set TEST_FILTERS=-trait Category=BVT -trait Category=SlowBVT
+if []==[%TEST_FILTERS%] set "TEST_FILTERS=Category=BVT^|Category=SlowBVT"
 
 @Echo Test assemblies = %TESTS%
 @Echo Test filters = %TEST_FILTERS%
 
-PowerShell -NoProfile -ExecutionPolicy Bypass -Command "& ./Parallel-Tests.ps1 -directories %TESTS% -testFilter \"%TEST_FILTERS%\" -outDir '%TestResultDir%' -dotnet '%_dotnet%'"
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "& ./Parallel-Tests.ps1 -directories %TESTS% -testFilter '%TEST_FILTERS%' -outDir '%TestResultDir%' -dotnet '%_dotnet%'"
 set testresult=%errorlevel%
 popd
 endlocal&set testresult=%testresult%
